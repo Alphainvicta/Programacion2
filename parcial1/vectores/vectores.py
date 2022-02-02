@@ -1,41 +1,35 @@
 import sys, pygame
 import random
+from math import sqrt
 
 pygame.init()
 size = width, height = 1000, 1000
 black = 0, 0, 0
 white = 255, 255, 255
 screen = pygame.display.set_mode(size)
+nlist = [250, 300, 350, 400, 450, 550, 600, 650, 700, 750]
 
 class Vector:
-    def __init__(self, color, x, y):
-        self.color = color
+    def __init__(self, x, y):
         self.x = x
         self.y = y
     
-    def draw(self):
-        pygame.draw.line(screen, self.color, (500, 500), (self.x, self.y))
-        pygame.draw.circle(screen, self.color, (self.x, self.y), 2)
+    def norm(self, x, y):
+        mag = sqrt((x**2) + (y**2))
+        self.x = x
+        self.y = y
+        self.normx = (x / mag) 
+        self.normy = (y / mag)
 
 class Generator:
     def __init__(self):
         self.randomvectors()
-        self.drawvectors()
-
-    def drawvectors(self):
-        self.va.draw()
-        self.vb.draw()
 
     def randomvectors(self):
-        color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        x = random.randint(250, 750)
-        y = random.randint(250, 750)
-        self.va = Vector(color, x, y)
-
-        color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        x = random.randint(250, 750)
-        y = random.randint(250, 750)
-        self.vb = Vector(color, x, y)
+        self.color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+        x = random.choice(nlist)
+        y = random.choice(nlist)
+        self.vector = Vector(x, y)
 
 def rowsandcols():
     ##cols
@@ -55,6 +49,31 @@ def rowsandcols():
         pygame.draw.rect(screen, white, [x, 490, 1, 20])
         x += 50
 
+def drawvectors():
+    for i in vlist:
+        pygame.draw.line(screen, vlist[i].color, (500, 500), (vlist[i].vector.x, vlist[i].vector.y), 3)
+        pygame.draw.circle(screen, vlist[i].color, (vlist[i].vector.x, vlist[i].vector.y), 4)
+
+def normaddjust(nv):
+    if nv.vector.x > 500 and nv.vector.y > 500:
+        nv.vector.x = 500 + (nv.vector.normx * 50)
+        nv.vector.y = 500 + (nv.vector.normy * 50)
+
+    if nv.vector.x > 500 and nv.vector.y < 500:
+        nv.vector.x = 500 + (nv.vector.normx * 50)
+        nv.vector.y = 500 - (nv.vector.normy * 50)
+    
+    if nv.vector.x < 500 and nv.vector.y > 500:
+        nv.vector.x = 500 - (nv.vector.normx * 50)
+        nv.vector.y = 500 + (nv.vector.normy * 50)
+
+    if nv.vector.x < 500 and nv.vector.y < 500:
+        nv.vector.x = 500 - (nv.vector.normx * 50)
+        nv.vector.y = 500 - (nv.vector.normy * 50)
+
+vlist = {"vectora": Generator(), "vectorb": Generator()}
+
+
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -62,10 +81,19 @@ while 1:
         if event.type == pygame.KEYDOWN:
             screen.fill(black)
             if event.key == pygame.K_KP_1:
-                Generator()
-                
+                vlist = {"vectora": Generator(), "vectorb": Generator()}
 
+            if event.key == pygame.K_KP_2:
+                vlist["norma"] = Generator()
+                vlist["norma"].vector.norm(vlist["vectora"].vector.x, vlist["vectora"].vector.y)
+                normaddjust(vlist["norma"])
+
+            if event.key == pygame.K_KP_3:
+                vlist["normb"] = Generator()
+                vlist["normb"].vector.norm(vlist["vectorb"].vector.x, vlist["vectorb"].vector.y)
+                normaddjust(vlist["normb"])
+
+    drawvectors()
     rowsandcols()
     pygame.display.update()
-
     pygame.display.flip()
