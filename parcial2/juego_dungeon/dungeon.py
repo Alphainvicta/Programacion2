@@ -39,6 +39,7 @@ class Dungeon:
             rancoordy = random.randint(0, self.y - 1)
         self.room[rancoordy][rancoordx] = 'C'
         self.chest = [rancoordy, rancoordx]
+        self.chest_open = 1
     
     def setenemy(self):
         self.enemies = random.randint(2,5)
@@ -60,7 +61,6 @@ class Dungeon:
         self.croom[rancoordy][rancoordx] = 'P'
         self.player = [rancoordy, rancoordx]
     
-
 dungeon = Dungeon()
 bombs = 10
 hearts = 3
@@ -72,13 +72,21 @@ def print_room():
         print()
 
 def chest_luck():
-    x = random.randint(0, 5)
-    if x == 1:
-        print('encontraste ', x, 'bomba')
-        print('')
+
+    if dungeon.chest_open == 1:
+        x = random.randint(0, 5)
+        if x == 1:
+            print('encontraste ', x, 'bomba')
+            print('')
+        else:
+            print('encontraste ', x, 'bombas')
+            print('')
+    
     else:
-        print('encontraste ', x, 'bombas')
-        print('')
+        x = 0
+
+    dungeon.chest_open = 0
+
     return x
 
 def fight(hearts):
