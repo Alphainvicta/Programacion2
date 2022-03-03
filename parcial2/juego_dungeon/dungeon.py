@@ -63,13 +63,21 @@ class Dungeon:
     
 dungeon = Dungeon()
 bombs = 10
-hearts = 3
+hearts = 10
+level = 1
 
 def print_room():
-  for i in range(dungeon.y):
+    print()
+    for i in range(dungeon.y):
+        print('              ', end='')
         for j in range(dungeon.x):
-            print(dungeon.croom[i][j], end=" ")
+            print(dungeon.croom[i][j], end=' ')
+        if i == (dungeon.y / 2) - 1:
+            print('              pisos bajados: ', level, end='')
+        if i + .5 == (dungeon.y / 2):
+            print('              pisos bajados: ', level, end='')
         print()
+    print()
 
 def chest_luck():
 
@@ -83,6 +91,8 @@ def chest_luck():
             print('')
     
     else:
+        print('el cofre ya fue abierto')
+        print('')
         x = 0
 
     dungeon.chest_open = 0
@@ -92,13 +102,14 @@ def chest_luck():
 def fight(hearts):
     r1 = random.randint(0,4)
     r2 = random.randint(5,10)
-
+    vhearts = r2 - r1
 
     print('▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄')
     print('comienza el combate!')
     print('')
     mchoose = random.randint(r1,r2)
     print('predice el mismo numero que tu enemigo entre ', r1, ' y ',  r2, ': ')
+    print('')
     pchoose = int(input())
     print('')
 
@@ -108,17 +119,19 @@ def fight(hearts):
             print('has muerto')
             print('')
             result = 0
+            break
         print('perdiste un corazon, corazones restantes: ', hearts)
         print('')
         print('predice el mismo numero que tu enemigo entre ', r1, ' y ',  r2, ': ')
         print('')
         pchoose = int(input())
+        print('')
         
 
     if mchoose == pchoose:
-        print('derrotaste a tu enemigo! ganaste 2 corazones')
+        print('derrotaste a tu enemigo! ganaste',  vhearts, 'corazones')
         print('')
-        hearts += 2
+        hearts += vhearts
         result = 1
 
     print('se acabo el combate!')
@@ -144,9 +157,12 @@ while 1:
             if dungeon.croom[dungeon.player[0] - 1][dungeon.player[1]] == 'E':
                 result, hearts = fight(hearts)
                 if result == 0:
+                    print('')
+                    print('Fin del juego')
                     break
                 if result == 1:
                     dungeon.croom[dungeon.player[0] - 1][dungeon.player[1]] = '░'
+                    dungeon.enemies -= 1
 
             if dungeon.croom[dungeon.player[0] - 1][dungeon.player[1]] == 'C':
                 bombs += chest_luck()
@@ -154,6 +170,7 @@ while 1:
             if dungeon.croom[dungeon.player[0] - 1][dungeon.player[1]] == 'D':
                 if dungeon.enemies == 0:
                     dungeon = Dungeon()
+                    level += 1
                 else:
                     print('la puerta esta bloqueada, derrota a todos los enemigos restantes para poder pasar')
                     print('')
@@ -182,9 +199,12 @@ while 1:
             if dungeon.croom[dungeon.player[0]][dungeon.player[1] - 1] == 'E':
                 result, hearts = fight(hearts)
                 if result == 0:
+                    print('')
+                    print('Fin del juego')
                     break
                 if result == 1:
                     dungeon.croom[dungeon.player[0]][dungeon.player[1] - 1] = '░'
+                    dungeon.enemies -= 1
 
             if dungeon.croom[dungeon.player[0]][dungeon.player[1] - 1] == 'C':
                 bombs += chest_luck()
@@ -192,6 +212,7 @@ while 1:
             if dungeon.croom[dungeon.player[0]][dungeon.player[1] - 1] == 'D':
                 if dungeon.enemies == 0:
                     dungeon = Dungeon()
+                    level += 1
                 else:
                     print('la puerta esta bloqueada, derrota a todos los enemigos restantes para poder pasar')
                     print('')
@@ -219,9 +240,12 @@ while 1:
             if dungeon.croom[dungeon.player[0] + 1][dungeon.player[1]] == 'E':
                 result, hearts = fight(hearts)
                 if result == 0:
+                    print('')
+                    print('Fin del juego')
                     break
                 if result == 1:
                     dungeon.croom[dungeon.player[0] + 1][dungeon.player[1]] = '░'
+                    dungeon.enemies -= 1
 
             if dungeon.croom[dungeon.player[0] + 1][dungeon.player[1]] == 'C':
                 bombs += chest_luck()
@@ -229,6 +253,7 @@ while 1:
             if dungeon.croom[dungeon.player[0] + 1][dungeon.player[1]] == 'D':
                 if dungeon.enemies == 0:
                     dungeon = Dungeon()
+                    level += 1
                 else:
                     print('la puerta esta bloqueada, derrota a todos los enemigos restantes para poder pasar')
                     print('')
@@ -256,9 +281,12 @@ while 1:
             if dungeon.croom[dungeon.player[0]][dungeon.player[1] + 1] == 'E':
                 result, hearts = fight(hearts)
                 if result == 0:
+                    print('')
+                    print('Fin del juego')
                     break
                 if result == 1:
                     dungeon.croom[dungeon.player[0]][dungeon.player[1] + 1] = '░'
+                    dungeon.enemies -= 1
 
             if dungeon.croom[dungeon.player[0]][dungeon.player[1] + 1] == 'C':
                 bombs += chest_luck()
@@ -266,6 +294,7 @@ while 1:
             if dungeon.croom[dungeon.player[0]][dungeon.player[1] + 1] == 'D':
                 if dungeon.enemies == 0:
                     dungeon = Dungeon()
+                    level += 1
                 else:
                     print('la puerta esta bloqueada, derrota a todos los enemigos restantes para poder pasar')
                     print('')
