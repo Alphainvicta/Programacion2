@@ -115,6 +115,8 @@ def fight(hearts):
 
     while mchoose != pchoose:
         hearts -= 1
+        if vhearts != 0:
+            vhearts -= 1
         if hearts == 0:
             print('has muerto')
             print('')
